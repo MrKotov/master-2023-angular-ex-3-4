@@ -1,14 +1,32 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { DockModule } from 'primeng/dock';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    DockModule,
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'ex-3';
+  title = 'routing-app';
+  position: PositionOption = 'top';
+
+  items: MenuItem[] = [
+    {
+      label: 'Finder',
+      icon: 'assets/student.png',
+    },
+  ];
 }
+
+type PositionOption = 'top' | 'bottom' | 'left' | 'right';
