@@ -16,9 +16,7 @@ import { Student } from './student.interface';
   imports: [
     CommonModule,
     TableModule,
-    TagModule,
     DropdownModule,
-    MultiSelectModule,
     FormsModule,
     HttpClientModule,
   ],
