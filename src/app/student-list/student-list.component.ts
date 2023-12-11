@@ -2,7 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
-import { FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { StudentService } from './students.service';
 import { Observable, map, switchMap } from 'rxjs';
@@ -11,9 +17,10 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { InputTextModule } from 'primeng/inputtext';
-import { Message, MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { University } from './university.interface';
 import { UniversityService } from './university.service';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-student-list',
@@ -26,8 +33,10 @@ import { UniversityService } from './university.service';
     DialogModule,
     ToastModule,
     InputTextModule,
+    InputNumberModule,
     DropdownModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
   ],
   providers: [StudentService, UniversityService, MessageService],
@@ -43,7 +52,12 @@ export class StudentListComponent implements OnInit {
   loading: boolean = true;
 
   visible = false;
-  newStudent: Student = {} as Student;
+  newStudentForm = new FormGroup({
+    name: new FormControl<string | null>(null, [Validators.required]),
+    age: new FormControl<number | null>(null, [Validators.required]),
+    university: new FormControl<University | null>(null, [Validators.required]),
+  });
+
   selectedUniversity: University = {} as University;
 
   constructor(
@@ -67,8 +81,16 @@ export class StudentListComponent implements OnInit {
   }
 
   addStudent() {
+    if (!this.newStudentForm.valid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation errors',
+      });
+      return;
+    }
+
     this.studentService
-      .addStudent(this.newStudent)
+      .addStudent(this.newStudentForm.getRawValue() as Student)
       .pipe(
         switchMap((result) => {
           return this.studentService.getStudents().pipe(map((r) => result));
@@ -81,12 +103,16 @@ export class StudentListComponent implements OnInit {
           summary: 'Successfully added student',
         });
         this.visible = false;
-        this.newStudent = {} as Student;
+        this.newStudentForm.reset();
       });
   }
 
+  removeStudent(id: number) {
+    /** Implementation here */
+  }
+
   closeModal() {
-    this.newStudent = {} as Student;
+    this.newStudentForm.reset();
     this.visible = false;
   }
 }

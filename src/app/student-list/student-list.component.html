@@ -21,7 +21,7 @@
   </ng-template>
   <ng-template pTemplate="header">
     <tr>
-      <th style="width: 25%">Id</th>
+      <th style="width: 10%">Id</th>
       <th style="width: 25%">Name</th>
       <th style="width: 25%">Age</th>
       <th style="width: 25%">University</th>
@@ -63,6 +63,7 @@
     </tr>
   </ng-template>
 </p-table>
+
 <p-toast></p-toast>
 
 <p-dialog
@@ -70,39 +71,65 @@
   [(visible)]="visible"
   [style]="{ width: '50vw', height: '25rem' }"
 >
-  <div class="card">
+  <form [formGroup]="newStudentForm" (ngSubmit)="addStudent()" class="card">
     <div class="flex-container">
-      <div class="col-12">
+      <div class="form-row form-group">
         <span class="p-float-label">
-          <input pInputText id="name" [(ngModel)]="newStudent.name" />
+          <input
+            [class]="
+              newStudentForm.controls['name'].valid ? '' : 'ng-dirty ng-invalid'
+            "
+            pInputText
+            id="name"
+            name="name"
+            formControlName="name"
+          />
           <label for="name">Name</label>
         </span>
       </div>
-      <div class="col-12">
+      <div class="form-row form-group">
         <span class="p-float-label">
-          <input pInputText id="age" [(ngModel)]="newStudent.age" />
+          <p-inputNumber
+            [class]="
+              newStudentForm.controls['age'].valid ? '' : 'ng-dirty ng-invalid'
+            "
+            [min]="18"
+            [max]="100"
+            inputId="age"
+            name="age"
+            formControlName="age"
+          >
+          </p-inputNumber>
           <label for="age">Age</label>
         </span>
       </div>
-      <div class="col-12">
+      <div class="form-row form-group">
         <span class="p-float-label">
           <p-dropdown
+            [class]="
+              newStudentForm.controls['university'].valid
+                ? ''
+                : 'ng-dirty ng-invalid'
+            "
             [options]="$any(universities$ | async)"
-            [(ngModel)]="newStudent.university"
             placeholder="Select a University"
             optionLabel="name"
             optionValue="id"
             inputId="university"
+            name="university"
+            formControlName="university"
           ></p-dropdown>
           <label for="university">Select a University</label>
         </span>
       </div>
-      <div class="col-12 buttons">
-        <p-button
-          (click)="addStudent()"
+      <div class="form-row buttons">
+        <button
+          pButton
           icon="pi pi-check"
+          type="submit"
           label="Confirm"
-        ></p-button>
+          [disabled]="!newStudentForm.valid"
+        ></button>
         <p-button
           (click)="closeModal()"
           icon="pi pi-times"
@@ -111,5 +138,5 @@
         ></p-button>
       </div>
     </div>
-  </div>
+  </form>
 </p-dialog>
