@@ -5,11 +5,26 @@
   [loading]="loading"
   [tableStyle]="{ 'min-width': '50rem' }"
 >
+  <ng-template pTemplate="caption">
+    <div class="flex">
+      <button
+        type="button"
+        pButton
+        (click)="openModal()"
+        pRipple
+        icon="pi pi-plus"
+        class="mr-2"
+        pTooltip="Add"
+        tooltipPosition="bottom"
+      ></button>
+    </div>
+  </ng-template>
   <ng-template pTemplate="header">
     <tr>
-      <th style="width: 33%">Id</th>
-      <th style="width: 33%">Name</th>
-      <th style="width: 33%">Age</th>
+      <th style="width: 25%">Id</th>
+      <th style="width: 25%">Name</th>
+      <th style="width: 25%">Age</th>
+      <th style="width: 25%">University</th>
     </tr>
     <tr>
       <th>
@@ -17,6 +32,9 @@
       </th>
       <th>
         <p-columnFilter type="text" field="name"></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter type="text" field="age"></p-columnFilter>
       </th>
       <th>
         <p-columnFilter type="text" field="age"></p-columnFilter>
@@ -34,6 +52,9 @@
       <td>
         {{ student.age }}
       </td>
+      <td>
+        {{ student?.university?.name }}
+      </td>
     </tr>
   </ng-template>
   <ng-template pTemplate="emptymessage">
@@ -42,3 +63,53 @@
     </tr>
   </ng-template>
 </p-table>
+<p-toast></p-toast>
+
+<p-dialog
+  header="New Student"
+  [(visible)]="visible"
+  [style]="{ width: '50vw', height: '25rem' }"
+>
+  <div class="card">
+    <div class="flex-container">
+      <div class="col-12">
+        <span class="p-float-label">
+          <input pInputText id="name" [(ngModel)]="newStudent.name" />
+          <label for="name">Name</label>
+        </span>
+      </div>
+      <div class="col-12">
+        <span class="p-float-label">
+          <input pInputText id="age" [(ngModel)]="newStudent.age" />
+          <label for="age">Age</label>
+        </span>
+      </div>
+      <div class="col-12">
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="$any(universities$ | async)"
+            [(ngModel)]="newStudent.university"
+            placeholder="Select a University"
+            optionLabel="name"
+            optionValue="id"
+            inputId="university"
+          ></p-dropdown>
+          <label for="university">Select a University</label>
+        </span>
+      </div>
+      <div class="col-12 buttons">
+        <p-button
+          (click)="addStudent()"
+          icon="pi pi-check"
+          label="Confirm"
+        ></p-button>
+        <p-button
+          (click)="closeModal()"
+          icon="pi pi-times"
+          label="Cancel"
+          class="p-button-danger"
+        ></p-button>
+      </div>
+    </div>
+  </div>
+</p-dialog>
